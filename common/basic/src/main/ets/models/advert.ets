@@ -4,7 +4,7 @@ export class AdvertModel{
   //广告显示
   ShowAd:boolean=false
   //广告链接
-  AdUrl:string=""
+  AdUrl?:string=""
   //广告图片
   ImageAd:ResourceStr=""
 }

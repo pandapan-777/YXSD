@@ -1,4 +1,4 @@
-import { AdvertModel } from 'basic'
+import { AdvertModel, UserSettingClass } from 'basic'
 import { window } from '@kit.ArkUI'
 
 @Entry
@@ -14,6 +14,12 @@ struct Start {
   @State timer: number = -1
 
   aboutToAppear(): void {
+
+    //获取到本地存储的广告配置
+    const setting = new UserSettingClass(getContext())
+    this.adObj = setting.getUserAd()
+
+    //调用倒计时方法
     this.countDown()
   }
 
@@ -48,7 +54,7 @@ struct Start {
 
   build() {
     Stack({ alignContent: Alignment.TopEnd }) {
-      Image($r("app.media.start"))
+      Image(this.adObj.ImageAd)
         .objectFit(ImageFit.Cover)
 
       Text(`${this.adObj.AdTime}秒后跳过`)
