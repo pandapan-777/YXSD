@@ -35,7 +35,7 @@ export class UserSettingClass {
     //获取仓库
     const store = this.getStore()
     //给仓库中存储数据
-    store.putSync("setting_ad", JSON.stringify(ad))
+    store.putSync(XSD_SETTING_AD, JSON.stringify(ad))
     //将输入写入磁盘中
     store.flush()
   }
