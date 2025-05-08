@@ -1,4 +1,5 @@
 import { AdvertModel } from 'basic'
+import { window } from '@kit.ArkUI'
 
 @Entry
 @Component
@@ -16,12 +17,23 @@ struct Start {
     this.countDown()
   }
 
+  //销毁子窗口
+  closeWin() {
+    //找到子窗口
+    //清除子窗口
+    window.findWindow("ad_window").destroyWindow()
+  }
+
   //倒计时方法
   countDown() {
     this.timer = setInterval(() => {
+      //倒计时为零后
       if (this.adObj.AdTime == 0) {
-        //将方法释放了
+        //清除定时器
         clearInterval(this.timer)
+        //销毁子窗口
+        this.closeWin()
+        //阻止代码往下执行
         return
       }
       this.adObj.AdTime--
@@ -45,8 +57,11 @@ struct Start {
         .height(30)
         .padding(8)
         .backgroundColor($r("app.color.background_page"))
-        .margin({ right: 20, top: 10 })
+        .margin({ right: 20, top: 30 })
         .textAlign(TextAlign.Center)
+        .onClick(() => {
+          this.closeWin()
+        })
 
     }
     .height('100%')
