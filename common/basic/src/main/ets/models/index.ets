@@ -1,1 +1,1 @@
-export *from "./advert"
+export * from "./advert"
