@@ -2,6 +2,9 @@
   "src": [
     "pages/Index",
     "pages/Start/Start",
-    "pages/Login/Login"
+    "pages/Login/Login",
+    "pages/view/My",
+    "pages/view/Task",
+    "pages/view/Message"
   ]
 }
