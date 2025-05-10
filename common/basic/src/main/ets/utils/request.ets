@@ -21,8 +21,11 @@ service.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 
 //5. 添加响应拦截器
 service.interceptors.response.use((response: AxiosResponse) => {
-  // 对响应数据做点什么
-  return response;
+  if (response.status===200) {
+    // 对响应数据做点什么
+    return response.data.data
+  }
+
 }, (error: AxiosError) => {
   // 对响应错误做点什么
   return Promise.reject(error);

@@ -5,3 +5,6 @@ export const XSD_SETTING = "setting"
 export const XSD_SETTING_AD = "setting_ad"
 
 export const BASE_URL="https://slwl-api.itheima.net/driver"
+
+//存储的token
+export const TOKEN_KEY="userToken"

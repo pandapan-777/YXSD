@@ -1,4 +1,7 @@
+import { LoginApi } from '../../api'
 import { AccountForModel } from '../../models'
+import { promptAction, router } from '@kit.ArkUI'
+import { UserSettingClass } from 'basic'
 
 @Entry
 @Component
@@ -11,11 +14,24 @@ struct Login {
     password: ''
   }
 
-  submitLogin() {
+  async submitLogin() {
     this.LoadingLogin = true
-    setInterval(() => {
+
+    try {
+      const res = await LoginApi(this.accountForm)
+      //TODO 将token存储到本地
+      const setting=new UserSettingClass(getContext())
+      setting.setUserToken(res)
+
+      //TODO 跳转到首页
+      router.pushUrl({
+        url: "pages/Index"
+      })
+    } catch (e) {
+      console.log(e);
+    } finally {
       this.LoadingLogin = false
-    }, 2000)
+    }
   }
 
   getFormValidate() {
