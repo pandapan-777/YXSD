@@ -23,7 +23,14 @@ struct Index {
       title: "my"
     }
   ]
+  @Watch("updateName")
   @State currentIndex: number = 0
+
+  @Provide currentName:string="task"
+  //监听·TabBar下标的方法
+  updateName(){
+    this.currentName=this.TabBarInfo[this.currentIndex].name
+  }
 
   @Builder
   getTabBar(item: TabClass) {
@@ -56,7 +63,7 @@ struct Index {
               Task()
             } else if (item.title === "message") {
               Message()
-            } else {
+            } else if(item.title==="my"){
               My()
             }
 
