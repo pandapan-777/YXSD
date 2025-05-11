@@ -25,11 +25,11 @@ struct Index {
   ]
   @Watch("updateName")
   @State currentIndex: number = 0
+  @Provide currentName: string = "task"
 
-  @Provide currentName:string="task"
   //监听·TabBar下标的方法
-  updateName(){
-    this.currentName=this.TabBarInfo[this.currentIndex].name
+  updateName() {
+    this.currentName = this.TabBarInfo[this.currentIndex].name
   }
 
   @Builder
@@ -40,6 +40,9 @@ struct Index {
         .height(22)
         .fillColor(item.title === this.TabBarInfo[this.currentIndex].title ? $r("app.color.primary") :
         $r("app.color.text_secondary"))
+        .margin({
+          top: 5
+        })
 
       Text(item.name)
         .fontSize(12)
@@ -63,7 +66,7 @@ struct Index {
               Task()
             } else if (item.title === "message") {
               Message()
-            } else if(item.title==="my"){
+            } else if (item.title === "my") {
               My()
             }
 

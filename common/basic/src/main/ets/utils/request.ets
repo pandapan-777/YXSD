@@ -46,7 +46,8 @@ service.interceptors.response.use((response: AxiosResponse) => {
     })
     //删除原来的token
     const setting = new UserSettingClass(getContext())
-    setting.setUserToken("")
+    // setting.setUserToken("")
+    setting.deleteUserToken()
     //重新登录
     router.replaceUrl({
       url: "pages/Login/Login"

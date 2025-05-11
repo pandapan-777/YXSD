@@ -5,6 +5,7 @@
     "pages/Login/Login",
     "pages/view/My",
     "pages/view/Task",
-    "pages/view/Message"
+    "pages/view/Message",
+    "pages/Setting/Setting"
   ]
 }
