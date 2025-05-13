@@ -49,30 +49,31 @@ export class UserSettingClass {
   }
 
   //存储token数据
-  setUserToken(token:string){
+  setUserToken(token: string) {
     //获取仓库
-    const store=this.getStore()
+    const store = this.getStore()
     //给仓库中添加数据
-    store.putSync(TOKEN_KEY,token)
+    store.putSync(TOKEN_KEY, token)
     //将数据写入到磁盘
     store.flush()
   }
 
   //获取储存在首选项的token的数据
-  getUserToken():string{
+  getUserToken(): string {
     //获取仓库
-    const store=this.getStore()
+    const store = this.getStore()
     //获取数据
-    return store.getSync(TOKEN_KEY,"")as string
+    return store.getSync(TOKEN_KEY, "") as string
 
   }
 
   //删除token数据的方法
-  deleteUserToken(){
+  deleteUserToken() {
     //获取仓库
-    const store=this.getStore()
+    const store = this.getStore()
     //删除数据
     store.deleteSync(TOKEN_KEY)
+    //写入到磁盘
+    store.flush()
   }
-
 }

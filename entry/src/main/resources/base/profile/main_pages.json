@@ -3,9 +3,9 @@
     "pages/Index",
     "pages/Start/Start",
     "pages/Login/Login",
-    "pages/view/My",
-    "pages/view/Task",
-    "pages/view/Message",
+    "pages/My/My",
+    "pages/Task/Task",
+    "pages/Message/Message",
     "pages/Setting/Setting"
   ]
 }

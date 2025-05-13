@@ -1,7 +1,7 @@
 import { TabClass } from 'basic'
-import { Message } from './view/Message'
-import { My } from './view/My'
-import { Task } from './view/Task'
+import { Message } from './Message/Message'
+import { My } from './My/My'
+import { Task } from './Task/Task'
 
 @Entry
 @Component

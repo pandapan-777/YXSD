@@ -1,4 +1,4 @@
-import { CustomDialogModel } from "../models"
+import { CustomDialogModel } from '../models'
 
 
 @CustomDialog
@@ -41,9 +41,9 @@ export struct IConfirm {
                   right: this.buttonList.length > 1 && index !== this.buttonList.length - 1 ? 1 : 0
                 }, color: $r("app.color.background_divider")
               })
-              .onClick(async () => {
+              .onClick(() => {
                 if (item.action) {
-                  await item.action
+                  item.action()
                 }
                 this.controller.close()
               })

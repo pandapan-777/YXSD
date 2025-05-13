@@ -13,14 +13,16 @@ export struct Setting {
       buttonList: [
         {
           text: "取消"
-        }, {
-        text: "确定",
-        fontColor: $r("app.color.primary"),
-        action: () => {
-          //调用退出登录接口
-          this.logout()
+        },
+        {
+          text: "确定",
+          fontColor: $r("app.color.primary"),
+          action: () => {
+            //调用退出登录接口
+            this.logout()
+          },
+          fontSize: 18
         }
-      }
       ]
     }),
     //4.去掉默认的弹窗样式
@@ -75,10 +77,10 @@ export struct Setting {
           .fontColor($r("app.color.text_primary"))
           .height(60)
           .borderRadius(7)
-          .onClick(() => {
-            //3.打开弹窗
-            this.controller.open()
-          })
+        .onClick(() => {
+          //3.打开弹窗
+          this.controller.open()
+        })
 
       }.width("100%")
       .padding({
