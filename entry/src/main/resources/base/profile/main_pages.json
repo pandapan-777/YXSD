@@ -6,6 +6,7 @@
     "pages/My/My",
     "pages/Task/Task",
     "pages/Message/Message",
-    "pages/Setting/Setting"
+    "pages/Setting/Setting",
+    "pages/TaskDetail/TaskDetail"
   ]
 }
