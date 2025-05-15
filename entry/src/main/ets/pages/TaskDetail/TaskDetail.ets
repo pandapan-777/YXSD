@@ -1,5 +1,5 @@
 import { router } from '@kit.ArkUI'
-import { INavBar, IToggleCard, RouterParamsModel } from 'basic'
+import { BaseBuilderClass, INavBar, IToggleCard, RouterParamsModel } from 'basic'
 import { getTaskDetailInfoApi } from '../../api/task_detail'
 import { TaskDetailInfoModel } from '../../models'
 
@@ -41,25 +41,26 @@ struct TaskDetail {
       Column() {
         Row() {
           Text("起").baseTextIconStyle()
-          Text("jgcdskagyurfewish").baseTextStyle()
+          Text(this.taskDetailInfo?.startAddress).baseTextStyle()
         }.margin({ top: 21 })
 
         Row() {
           Text("止").baseTextIconStyle().backgroundColor($r("app.color.primary"))
-          Text("jgcdskagyurfewish").baseTextStyle()
+          Text(this.taskDetailInfo.endAddress).baseTextStyle()
         }.margin({ top: 21 })
       }
       .alignItems(HorizontalAlign.Start)
       .layoutWeight(1)
       .margin({ right: 20 })
 
-      Column() {
-        Image($r("app.media.ic_navigation")).width(30)
-        Text("开始导航").fontSize(14).margin({ top: 20, bottom: 20 })
-      }.justifyContent(FlexAlign.SpaceBetween)
-      .margin({
-        top: 20
-      })
+      //
+      // Column() {
+      //   Image($r("app.media.ic_navigation")).width(25)
+      //   Text("开始导航").fontSize(14).margin({ top: 20, bottom: 20 })
+      // }.justifyContent(FlexAlign.SpaceBetween)
+      // .margin({
+      //   top: 20
+      // })
 
     }.justifyContent(FlexAlign.SpaceBetween).alignItems(VerticalAlign.Center).width("100%")
 
@@ -70,25 +71,28 @@ struct TaskDetail {
       .margin({ left: 8, right: 8, top: 21 })
 
     this.getBaseContentItem({
+      title: "任务编号",
+      value: this.taskDetailInfo.transportTaskId
+    })
+    this.getBaseContentItem({
       title: "联系人",
-      value: "张三"
+      value: this.taskDetailInfo.startHandoverName
     })
 
     this.getBaseContentItem({
       title: "联系电话",
-      value: "r4675423134567",
+      value: this.taskDetailInfo.startHandoverPhone,
       icon: $r("app.media.ic_phone")
     })
 
     this.getBaseContentItem({
       title: "提货时间",
-      value: "r4675423134567",
+      value: this.taskDetailInfo.planDepartureTime
     })
 
     this.getBaseContentItem({
       title: "预计送达时间",
-      value: "r4675423134567",
-
+      value: this.taskDetailInfo.planArrivalTime
     })
 
   }
@@ -100,15 +104,14 @@ struct TaskDetail {
       Row() {
         Text("车牌号").fontSize(14).fontColor($r("app.color.text_secondary"))
           .lineHeight(20)
-        Text("京A5643768").fontSize(14).fontColor($r("app.color.text_secondary"))
+        Text(this.taskDetailInfo.licensePlace).fontSize(14).fontColor($r("app.color.text_secondary"))
           .lineHeight(20)
       }.justifyContent(FlexAlign.SpaceBetween).width("100%")
 
       Row() {
         Text("司机姓名").fontSize(14).fontColor($r("app.color.text_secondary"))
           .lineHeight(20)
-        Text("张三").fontSize(14).fontColor($r("app.color.text_secondary"))
-          .lineHeight(20)
+        Text(this.taskDetailInfo.driverName).fontSize(14).fontColor($r("app.color.text_secondary"))
       }.justifyContent(FlexAlign.SpaceBetween).width("100%")
     }.padding({ right: 10, left: 10, top: 10 })
 
@@ -119,14 +122,14 @@ struct TaskDetail {
   getTransLineContent() {
     Row() {
       Column() {
-        Text("北京市").fontSize(16).fontColor($r("app.color.text_primary")).lineHeight(22)
-        Text("北京市").fontSize(14).lineHeight(22)
+        Text(this.taskDetailInfo.startProvince).fontSize(16).fontColor($r("app.color.text_primary")).lineHeight(22)
+        Text(this.taskDetailInfo.startCity).fontSize(14).lineHeight(22)
       }.width(50)
 
       Image($r("app.media.ic_right_arrow")).width(36).height(16)
       Column() {
-        Text("河南省").fontSize(16).fontColor($r("app.color.text_primary"))
-        Text("郑州市").fontSize(14).lineHeight(22)
+        Text(this.taskDetailInfo.endProvince).fontSize(16).fontColor($r("app.color.text_primary"))
+        Text(this.taskDetailInfo.endCity).fontSize(14).lineHeight(22)
       }.width(50)
     }.justifyContent(FlexAlign.SpaceBetween).alignItems(VerticalAlign.Center).width("100%")
     .padding({
@@ -191,8 +194,7 @@ struct TaskDetail {
         .padding({
           bottom: 50
         })
-        .height("100%")
-      }.height("100%")
+      }
       .backgroundColor($r("app.color.background_page"))
     }
     .height('100%')
@@ -220,8 +222,3 @@ function baseTextStyle() {
   .lineHeight(20)
 }
 
-interface BaseBuilderClass {
-  title: string
-  value: string
-  icon?: ResourceStr
-}
