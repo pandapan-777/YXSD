@@ -9,7 +9,7 @@ export struct TaskList {
   @State
   taskList: TaskListItemDataModel[] = []
   //任务列表传递的参数
-  @State
+  @Prop
   queryParams: TaskListParamsModel = {
     page: 1,
     pageSize: 5,
@@ -56,7 +56,6 @@ export struct TaskList {
       console.log(e);
     }
   }
-
   //获取任务列表数据
   //下拉刷新的方法
   onRefresh = async () => {

@@ -6,7 +6,7 @@ import { IPreview } from './IPreview'
 @Component
 export struct IUpload {
   @Prop title: string = "请拍照上传照片"
-  @State imageList: ImageListModel[] = []
+  @Prop imageList: ImageListModel[] = []
   @Prop maxNumber: number = 3
   @State index: number = 0
   customDialogController: CustomDialogController = new CustomDialogController({
@@ -17,11 +17,13 @@ export struct IUpload {
     customStyle: true
 
   })
+  onImageListChange: (imageList: ImageListModel[]) => void = () => {
+  }
 
   //唤醒相机方法
   async selectImage() {
     //1.创建图库的选择器实例
-    const photoViewPicker = new photoAccessHelper.PhotoViewPicker
+    const photoViewPicker = new photoAccessHelper.PhotoViewPicker()
     //2.打开系统相册
     const result = await photoViewPicker.select({
       maxSelectNumber: this.maxNumber - this.imageList.length,
@@ -31,7 +33,12 @@ export struct IUpload {
     const data = result.photoUris.map((item: string) => {
       return { url: item } as ImageListModel
     })
+    //4.将选择的图片保存到ImageList里面
     this.imageList.push(...data)
+
+    this.onImageListChange(this.imageList)
+    //5.将选择的图片存储到沙箱
+    //SaveLocalFiles(this.imageList)
   }
 
   build() {
@@ -49,15 +56,25 @@ export struct IUpload {
       Grid() {
         ForEach(this.imageList, (item: ImageListModel, index: number) => {
           GridItem() {
-            Image(item.url)
-              .width(95)
-              .height(95)
-              .borderRadius(5)
-              .onClick(() => {
-                //点击照片
-                this.customDialogController.open()
-                this.index = index
-              })
+            Stack({ alignContent: Alignment.TopEnd }) {
+              Image(item.url)
+                .width(95)
+                .height(95)
+                .borderRadius(5)
+                .onClick(() => {
+                  //点击照片
+                  this.customDialogController.open()
+                  this.index = index
+                })
+
+              Image($r("app.media.ic_btn_delete"))
+                .width(30)
+                .height(30)
+                .onClick(() => {
+                  this.imageList.splice(index, 1)
+                  this.onImageListChange(this.imageList)
+                })
+            }
           }
         })
         if (this.imageList.length < this.maxNumber) {
@@ -86,3 +103,4 @@ export struct IUpload {
     .alignItems(HorizontalAlign.Start)
   }
 }
+

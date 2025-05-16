@@ -1,7 +1,15 @@
-import { router } from '@kit.ArkUI'
-import { BaseBuilderClass, INavBar, IToggleCard, IUpload, RouterParamsModel } from 'basic'
-import { getTaskDetailInfoApi } from '../../api/task_detail'
-import { TaskDetailInfoModel } from '../../models'
+import { promptAction, router } from '@kit.ArkUI'
+import {
+  BaseBuilderClass,
+  ImageListModel,
+  INavBar,
+  IToggleCard,
+  IUpload,
+  RouterParamsModel,
+  SaveLocalFiles,
+} from 'basic'
+import { deliverApi, getTaskDetailInfoApi, pickUpApi } from '../../api/task_detail'
+import { deliverModel, PickUpModel, TaskDetailInfoModel, TaskTypeEnum } from '../../models'
 import { TaskDetailSkeleton } from './TaskDetailSkeleton/TaskDetailSkeleton'
 
 @Entry
@@ -13,6 +21,18 @@ struct TaskDetail {
   taskDetailInfo: TaskDetailInfoModel = {} as TaskDetailInfoModel
   @State
   skeletonStatus: boolean = false
+  @State
+  queryParams: PickUpModel = {
+    id: "",
+    cargoPickUpPictureList: [],
+    cargoPictureList: []
+  } as PickUpModel
+  @State
+  deliverParams: deliverModel = {
+    id: "",
+    certificatePictureList: [],
+    deliverPictureList: []
+  } as deliverModel
 
   aboutToAppear(): void {
     this.getParamsData()
@@ -161,29 +181,116 @@ struct TaskDetail {
     }
   }
 
+  //判断有没有上传图片
+  getPickUpEnable() {
+    //有 返回true
+    if (this.taskDetailInfo.cargoPickUpPictureList?.length > 0 && this.taskDetailInfo?.cargoPictureList.length > 0) {
+      return true
+    } else {
+      return false
+    }
+    //没有 返回False
+
+  }
+
   //底部布局
   @Builder
   getBottomBtn() {
-    Row() {
-      Button("延迟收货", { type: ButtonType.Capsule })
-        .width(125)
-        .height(50)
-        .fontSize(16)
-        .backgroundColor($r("app.color.btn_gray"))
-        .fontColor($r("app.color.text_primary"))
-      Button("提货")
-        .layoutWeight(1)
-        .height(50)
-        .fontSize(16)
-        .fontColor($r("app.color.white"))
-        .backgroundColor($r("app.color.primary_disabled"))
-        .margin({ left: 13 })
+    if (this.taskDetailInfo.status === TaskTypeEnum.Waiting) {
+      Row() {
+        Button("延迟收货", { type: ButtonType.Capsule })
+          .width(125)
+          .height(50)
+          .fontSize(16)
+          .backgroundColor($r("app.color.btn_gray"))
+          .fontColor($r("app.color.text_primary"))
+        Button("提货")
+          .layoutWeight(1)
+          .height(50)
+          .fontSize(16)
+          .fontColor($r("app.color.white"))
+          .backgroundColor(this.getPickUpEnable() ? $r("app.color.primary") : $r("app.color.primary_disabled"))
+          .enabled(this.getPickUpEnable())
+          .margin({ left: 13 })
+          .onClick(() => {
+            this.submitPickUp()
+          })
+      }
+      .width("100%")
+      .height(70)
+      .padding({ left: 15, right: 15 })
+      .backgroundColor($r("app.color.white"))
+      .justifyContent(FlexAlign.SpaceBetween)
+    } else if (this.taskDetailInfo.status === TaskTypeEnum.Line) {
+      Row() {
+        Button("异常上报", { type: ButtonType.Capsule })
+          .width(125)
+          .height(50)
+          .fontSize(16)
+          .backgroundColor($r("app.color.btn_gray"))
+          .fontColor($r("app.color.text_primary"))
+        Button("交货")
+          .layoutWeight(1)
+          .height(50)
+          .fontSize(16)
+          .fontColor($r("app.color.white"))
+          .backgroundColor(this.getPickUpEnable() ? $r("app.color.primary") : $r("app.color.primary_disabled"))
+          .enabled(this.getPickUpEnable())
+          .margin({ left: 13 })
+          .onClick(() => {
+            this.submitDeliver()
+          })
+      }
+      .width("100%")
+      .height(70)
+      .padding({ left: 15, right: 15 })
+      .backgroundColor($r("app.color.white"))
+      .justifyContent(FlexAlign.SpaceBetween)
     }
-    .width("100%")
-    .height(70)
-    .padding({ left: 15, right: 15 })
-    .backgroundColor($r("app.color.white"))
-    .justifyContent(FlexAlign.SpaceBetween)
+
+  }
+
+  //提货
+  async submitPickUp() {
+    try {
+      this.queryParams.id = this.params.id
+      const cargoPickUpPictureList = await SaveLocalFiles(this.taskDetailInfo.cargoPickUpPictureList)
+      const cargoPickPicture = await SaveLocalFiles(this.taskDetailInfo.cargoPickUpPictureList)
+      this.queryParams.cargoPickUpPictureList = cargoPickUpPictureList
+      this.queryParams.cargoPictureList = cargoPickPicture
+
+      // AlertDialog.show({
+      //   message: JSON.stringify(this.queryParams, null, 2)
+      // })
+      await pickUpApi(this.queryParams)
+
+
+      //重新获取任务详情数据
+      this.getTaskDetail()
+
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  //交货
+  async submitDeliver() {
+    try {
+      this.deliverParams.id = this.params.id
+      this.deliverParams.deliverPictureList = this.taskDetailInfo.cargoPictureList
+      this.deliverParams.certificatePictureList = this.taskDetailInfo.cargoPickUpPictureList
+
+      await deliverApi(this.deliverParams)
+
+      //重新获取任务详情数据
+      this.getTaskDetail()
+
+      promptAction.showToast({
+        message: "交货成功"
+      })
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   build() {
@@ -208,8 +315,20 @@ struct TaskDetail {
 
             IToggleCard({ title: "物品信息", toggleCard: false })
             IToggleCard({ title: "提供信息", toggleCard: false }) {
-              IUpload({ title: "请拍照上传回单凭证" })
-              IUpload({ title: "请拍照上传货品照片" })
+              IUpload({
+                title: "请拍照上传回单凭证",
+                imageList: this.taskDetailInfo.cargoPickUpPictureList || [],
+                onImageListChange: (imageList: ImageListModel[]) => {
+                  this.taskDetailInfo.cargoPickUpPictureList = imageList
+                }
+              })
+              IUpload({
+                title: "请拍照上传货品照片",
+                imageList: this.taskDetailInfo.cargoPictureList || [],
+                onImageListChange: (imageList: ImageListModel[]) => {
+                  this.taskDetailInfo.cargoPictureList = imageList
+                }
+              })
             }
           }
           .padding({ bottom: 20 })

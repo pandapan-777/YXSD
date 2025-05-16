@@ -10,7 +10,7 @@ export interface TaskDetailInfoModel {
   //创建时间
   created: string
   //提货凭证
-  cargoPickPictureList: ImageListModel[];
+  cargoPickUpPictureList: ImageListModel[];
 
   //提货图片
   cargoPictureList: ImageListModel[];
@@ -81,7 +81,7 @@ export interface TaskDetailInfoModel {
   startProvince: string;
 
   //作业状态,1待提货，2在途，3改派，4已交付，5已作废
-  status: string
+  status: number
   //运输任务id
   transportTaskId: string
 }
@@ -95,3 +95,28 @@ export interface ExceptionListModel {
   handleResult: string;
 }
 
+export interface PickUpModel{
+  //提货凭证拍照数组
+  cargoPickUpPictureList:ImageListModel[];
+
+  //提货照片数组
+  cargoPictureList:ImageListModel[];
+  //司机作业id
+  id:string;
+
+
+}
+
+
+
+export interface deliverModel{
+  //提货凭证拍照数组
+  certificatePictureList:ImageListModel[];
+
+  //提货照片数组
+  deliverPictureList:ImageListModel[];
+  //司机作业id
+  id:string;
+
+
+}

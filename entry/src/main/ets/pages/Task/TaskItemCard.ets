@@ -1,4 +1,4 @@
-import { TaskListItemDataModel } from '../../models/task'
+import { TaskListItemDataModel, TaskTypeEnum } from '../../models/task'
 import { router } from '@kit.ArkUI'
 
 @Preview
@@ -7,11 +7,11 @@ export struct TaskItemCard {
   @Prop
   taskItem: TaskListItemDataModel = {} as TaskListItemDataModel
 
-  toPickUp(){
+  toPickUp() {
     router.pushUrl({
-      url:"pages/TaskDetail/TaskDetail",
-      params:{
-        id:this.taskItem.id
+      url: "pages/TaskDetail/TaskDetail",
+      params: {
+        id: this.taskItem.id
       }
     })
   }
@@ -98,12 +98,22 @@ export struct TaskItemCard {
 
         }.alignItems(HorizontalAlign.Start)
 
-        Button("提货", { type: ButtonType.Capsule })
-          .backgroundColor(this.taskItem.enablePickUp ? $r("app.color.primary") : $r("app.color.primary_disabled"))
-          .fontColor($r("app.color.white"))
-          .fontSize(14)
-          .enabled(this.taskItem.enablePickUp)
-          .height(32)
+        if (this.taskItem.status===TaskTypeEnum.Waiting){
+          Button("提货", { type: ButtonType.Capsule })
+            .backgroundColor(this.taskItem.enablePickUp?$r("app.color.primary"):$r("app.color.primary_disabled"))
+            .fontColor($r("app.color.white"))
+            .fontSize(14)
+            .enabled(this.taskItem.enablePickUp)
+            .height(32)
+        }else if (this.taskItem.status===TaskTypeEnum.Line){
+          Button("交货", { type: ButtonType.Capsule })
+            .backgroundColor($r("app.color.primary"))
+            .fontColor($r("app.color.white"))
+            .fontSize(14)
+            .enabled(this.taskItem.enablePickUp)
+            .height(32)
+        }
+
 
       }.width("100%")
       .justifyContent(FlexAlign.SpaceBetween)

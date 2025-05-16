@@ -87,7 +87,7 @@ export interface TaskListItemDataModel {
   //提货对接人
   startHandover:string
   //作业状态,1待提货，2在途，3改派，4已交付，5已作废
-  status:string
+  status:number
   //运输任务id
   transportTaskId:string
 }
