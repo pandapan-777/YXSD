@@ -49,8 +49,9 @@ export struct My {
   //获取任务数据的方法
   async getUserTaskInfo() {
     try {
+      this.loading = true
       this.userTaskInfo = await getUserTaskInfoApi(this.queryTaskParms)
-
+      this.loading = false
     } catch (e) {
       console.log(e)
     }

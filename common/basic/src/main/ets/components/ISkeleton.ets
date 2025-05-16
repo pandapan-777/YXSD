@@ -1,9 +1,9 @@
-
 @Component
 export struct ISkeleton {
   customWidth: number | string = ""
   customHeight: number | string = ""
   circle: boolean = false
+  @Prop
   bgColor: string = "#f3f4f5"
   @State
   timer: number = -1

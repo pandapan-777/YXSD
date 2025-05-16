@@ -1,7 +1,8 @@
 import { router } from '@kit.ArkUI'
-import { BaseBuilderClass, INavBar, IToggleCard, RouterParamsModel } from 'basic'
+import { BaseBuilderClass, INavBar, IToggleCard, IUpload, RouterParamsModel } from 'basic'
 import { getTaskDetailInfoApi } from '../../api/task_detail'
 import { TaskDetailInfoModel } from '../../models'
+import { TaskDetailSkeleton } from './TaskDetailSkeleton/TaskDetailSkeleton'
 
 @Entry
 @Component
@@ -10,6 +11,8 @@ struct TaskDetail {
   params: RouterParamsModel = {} as RouterParamsModel
   @State
   taskDetailInfo: TaskDetailInfoModel = {} as TaskDetailInfoModel
+  @State
+  skeletonStatus: boolean = false
 
   aboutToAppear(): void {
     this.getParamsData()
@@ -149,57 +152,80 @@ struct TaskDetail {
   //获取任务详情的数据
   async getTaskDetail() {
     try {
+      this.skeletonStatus = true
       this.taskDetailInfo = await getTaskDetailInfoApi(this.params.id)
+      this.skeletonStatus = false
 
     } catch (e) {
       console.log("error", e)
     }
   }
 
+  //底部布局
+  @Builder
+  getBottomBtn() {
+    Row() {
+      Button("延迟收货", { type: ButtonType.Capsule })
+        .width(125)
+        .height(50)
+        .fontSize(16)
+        .backgroundColor($r("app.color.btn_gray"))
+        .fontColor($r("app.color.text_primary"))
+      Button("提货")
+        .layoutWeight(1)
+        .height(50)
+        .fontSize(16)
+        .fontColor($r("app.color.white"))
+        .backgroundColor($r("app.color.primary_disabled"))
+        .margin({ left: 13 })
+    }
+    .width("100%")
+    .height(70)
+    .padding({ left: 15, right: 15 })
+    .backgroundColor($r("app.color.white"))
+    .justifyContent(FlexAlign.SpaceBetween)
+  }
+
   build() {
-    Column() {
-      INavBar({
-        title: "任务详情",
-        rightText: "取消任务"
-      })
-      Scroll() {
-        Column() {
-          IToggleCard() {
-            this.getBaseContent()
-          }
+    if (this.skeletonStatus) {
+      TaskDetailSkeleton()
+    } else {
+      Column() {
+        INavBar({ title: "任务详情", rightText: "取消任务" })
+        Scroll() {
+          Column() {
+            IToggleCard() {
+              this.getBaseContent()
+            }
 
-          IToggleCard({
-            title: "车辆司机信息",
-            toggleCard: false
-          }) {
-            this.getDriverConTent()
-          }
+            IToggleCard({ title: "车辆司机信息", toggleCard: false }) {
+              this.getDriverConTent()
+            }
 
-          IToggleCard({
-            title: "运输路线",
-            toggleCard: false
-          }) {
-            this.getTransLineContent()
-          }
+            IToggleCard({ title: "运输路线", toggleCard: false }) {
+              this.getTransLineContent()
+            }
 
-          IToggleCard({
-            title: "物品信息",
-            toggleCard: false
-          })
-          IToggleCard({
-            title: "提供信息",
-            toggleCard: false
-          })
+            IToggleCard({ title: "物品信息", toggleCard: false })
+            IToggleCard({ title: "提供信息", toggleCard: false }) {
+              IUpload({ title: "请拍照上传回单凭证" })
+              IUpload({ title: "请拍照上传货品照片" })
+            }
+          }
+          .padding({ bottom: 20 })
         }
-        .padding({
-          bottom: 50
-        })
+        .layoutWeight(1)
+        .backgroundColor($r("app.color.background_page"))
+
+
+        //底部
+        this.getBottomBtn()
       }
+      .height('100%')
+      .width('100%')
       .backgroundColor($r("app.color.background_page"))
     }
-    .height('100%')
-    .width('100%')
-    .backgroundColor($r("app.color.background_page"))
+
   }
 }
 
@@ -221,4 +247,6 @@ function baseTextStyle() {
   .fontSize(14)
   .lineHeight(20)
 }
+
+
 
